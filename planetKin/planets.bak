@@ -1,0 +1,227 @@
+#!/usr/bin/python
+import math
+#from sympy import *
+
+
+###########################PURPOSE################################################## 
+#The purpose of this program is to simulate more than one physical body exerting 
+#forces on all other bodies using keplers laws and multivariable calculus 
+####################################################################################
+
+
+#This class describes a physical body with a position, velocity, acceleration, mass, and forces acting on it.  
+#It is intended to only represent the state of the body, not the body across time
+class body:
+    def __init__(self, bodyName, x, y, z, mass, Vx, Vy, Vz):
+	
+	self.name = bodyName 
+        self.x = x
+        self.y = y
+        self.z = z
+	self.Vx = Vx
+	self.Vy = Vy
+	self.Vz = Vz
+	self.ax = 0 
+	self.ay = 0
+	self.az = 0
+	
+	self.mass = mass
+
+	self.resultantForce = 0
+	self.resultantForcex = 0
+	self.resultantForcey = 0
+	self.resultantForcez = 0
+ 
+    def printStatus(self):
+	print self.getName(), 'position =', self.getPositionVector(), '  mass =', self.mass, 'Velocity =',self.getVelocityVector()
+    def getLogText(self):
+	logList = self.getPositionVector(),  self.getVelocityVector()#self.getMass(),
+	print logList
+	for e in logList:
+		items = "".join( str(e).replace('[','').replace(']',''))
+	return items + ', '
+
+    def getMass(self):
+	return self.mass
+
+    def getName(self):
+        return self.name
+ 
+    def getPositionVector(self):
+        return [self.x, self.y, self.z]
+
+	#PRINTING
+    def getPrintablePositionVector(self):
+       	return ["{:5.2f}".format(self.x),"{:5.2f}".format(self.y),"{:5.2f}".format(self.z)]
+
+    def getVelocityVector(self):
+	return [self.Vx, self.Vy, self.Vz]
+	
+	#PRINTING
+    def getPrintableVelocityVector(self):
+       	return ["{:5.2f}".format(self.Vx),"{:5.2f}".format(self.Vy),"{:5.2f}".format(self.Vz)]
+ 
+    def getAccelerationVector(self):
+	return [self.ax, self.ay, self.az]
+
+	#PRINTING
+    def getPrintableAccelerationVector(self):
+       	return ["{:5.2f}".format(self.ax),"{:5.2f}".format(self.ay),"{:5.2f}".format(self.az)]
+ 
+    def getResultantForceVector(self):
+       	return ["{:5.2f}".format(self.resultantForcex),"{:5.2f}".format(self.resultantForcey),"{:5.2f}".format(self.resultantForcez)]
+
+    def authorName(self, text):
+        self.creator = 'Greg' 
+
+
+#The purpose of this class is to compute the physical changes that occur to bodies that this class knows about
+#Currently, only gravitational forces and kinematics of bodies are calculated
+class physics:
+    def __init__(self, bodies):
+	 self.bodies = bodies
+	 self.G = .0000000000667
+	 self.logFileName = 'planetLogFile'
+	 self.planetLogFile = open(self.logFileName, 'w')
+
+    def __del__(self):
+	self.planetLogFile.close()
+ 
+    def printStatus(self,time):
+	print "###Current State after", time, "Seconds###"	
+	for body in self.bodies:
+		print body.name, 'F', body.getResultantForceVector(), 'Pos', body.getPrintablePositionVector(), 'Vel', body.getPrintableVelocityVector(), 'Acc', body.getPrintableAccelerationVector()
+
+    def log(self, logLine):
+	self.planetLogFile.write(logLine + "\n")
+    
+    def makeLogHeader(self):
+	header = ''
+	for body in self.bodies:
+		header = header + ', ' + body.name + ',,,,,' 	
+	header = header + "\n"
+	
+	for body in self.bodies:
+		header = header + "x,y,z,mass,Vx,Vy,Vz"
+	header = header + "\n"	
+
+	#logList = self.getPositionVector(), self.getMass(), self.getVelocityVector()
+	self.planetLogFile.write(header)
+    
+    #Computes the force 
+    def calculateTotalForce(self, targetBody):
+	#Forces don't have inertia (after each pass, forces aren't added like Velocity or position)	
+	targetBody.resultantForcex = 0
+	targetBody.resultantForcey = 0
+	targetBody.resultantForcez = 0
+
+	#For each body, add the forces of all other bodies exerted on the body
+	for body in self.bodies:
+		if targetBody != body:
+			#Break the resultant force into its component values
+			componentForces = self.calculateComponentForces(targetBody, body)
+			
+			#Add the component forces
+			targetBody.resultantForcex = targetBody.resultantForcex + componentForces[0] 	
+			targetBody.resultantForcey = targetBody.resultantForcey + componentForces[1] 	
+			targetBody.resultantForcez = targetBody.resultantForcez + componentForces[2] 	
+
+    #Calculates the force between two bodies in the direction pulling the targetBody toward the body
+    def calculateComponentForces(self, targetBody, body):
+	targetBody.resultantForce = (self.G * targetBody.mass * body.mass)/(self.getDistance(targetBody, body) ** 2 ) 
+	distance = self.getDistance(targetBody, body)	
+
+	unitVectorx = (body.x - targetBody.x) / distance
+	unitVectory = (body.y - targetBody.y) / distance
+	unitVectorz = (body.z - targetBody.z) / distance
+
+	resultantForcex = unitVectorx * targetBody.resultantForce
+	resultantForcey = unitVectory * targetBody.resultantForce
+	resultantForcez = unitVectorz * targetBody.resultantForce
+
+	return [resultantForcex, resultantForcey, resultantForcez]
+
+	# a = F/m
+    def calculateAcceleration(self, body):
+	body.ax = body.resultantForcex / body.mass
+	body.ay = body.resultantForcey / body.mass
+	body.az = body.resultantForcez / body.mass
+	
+	# v = vnot + a*t
+    def calculateVelocity(self, body, time):
+	body.Vx = body.Vx + body.ax * time
+	body.Vy = body.Vy + body.ax * time
+	body.Vz = body.Vz + body.ax * time
+
+	# x = xnot + v*t + 1/2at^2
+    def calculatePosition(self, body, time):
+	body.x = body.x + (body.Vx * time) + (.5 * body.ax) * (time ** 2)
+	body.y = body.y + (body.Vy * time) + (.5 * body.ay) * (time ** 2)
+	body.x = body.z + (body.Vz * time) + (.5 * body.az) * (time ** 2)
+    
+    def getAcceleration(self, body):
+	return [body.ax, body.ay, body.az]
+    
+    def getDistance(self, body1, body2):
+	distance = (((body2.x - body1.x) ** 2) + ((body2.y - body1.y) **2)  + ((body2.z - body1.z) **2)) ** .5
+	return distance 
+
+    def runSimulation(self, bodyList, time):
+	i = 1#not yet	
+
+####################################################################################################
+#######################################Start of Program#############################################
+####################################################################################################
+
+#              bodyName,  x,   y,   z,    mass,              Vxinitial,   Vyinitial,   Vzinitial
+sun= body(     'sun',     1.0 ,1.0, 1.0 ,1.9801 * (10 **30), 0.0,         0.0,         0.0)
+mercury = body('Mercury', 9.0, 9.0, 9.0, 3.3022 * (10 ** 23),0.0,         0.0,         0.0)
+venus = body(  'Venus',   7.0, 7.0, 7.0, 4.8685 * (10 ** 24),0.0,         0.0,         0.0)
+earth = body(  'Earth',   0.1, 0.1, 0.1 ,5.9736 * (10 ** 24),0.0,         0.0,         0.0)
+mars = body(   'Mars',    8.0, 8.0, 8.0, 6.4185 * (10 ** 23),0.0,         0.0,         0.0)
+jupiter= body( 'Jupiter', 2.0 ,2.0 ,2.0, 1.8986 * (10 ** 27),0.0,         0.0,         0.0)
+saturn = body( 'Saturn',  3.0, 3.0, 3, 5.6846 * (10 ** 26),  0.0,         0.0,         0.0)
+uranus = body( 'Uranus',  5.0, 5.0, 5.0, 8.6810 * (10 ** 25),0.0,         0.0,         0.0)
+neptune = body('Neptune', 4.0, 4.0, 4.0, 10.243 * (10 ** 25),0.0,         0.0,         0.0)
+pluto = body(  'Pluto',  11.0,11.0,11.0, 1.25 * (10 ** 22),  0.0,         0.0,         0.0)
+moon = body(   'Moon',   10.0,10.0,10.0, 7.349 * (10 ** 23), 0.0,         0.0,         0.0)
+
+#earth.printStatus()
+#moon.printStatus()
+
+#define all bodies with mass
+bodyList = [mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto, moon]
+
+#number of seconds between calculations
+timeIncrement = 1 
+
+####TESTING VARIABLES####
+testing = True 
+if testing == True:
+	me= body('Me',          1,6371000,1.0 ,80.0,0.0,0.0,0.0)#radius of earth is 6371000 meters
+	bodyList = [me, earth]
+	timeIncrement = 1
+
+newton = physics(bodyList)
+
+#run the physics engine#
+
+logging = True
+
+if logging == True:
+	newton.makeLogHeader()	
+
+logText = ''
+for time in range(0, 10000):
+	for planet in bodyList:
+		newton.calculateTotalForce(planet)
+		newton.calculateAcceleration(planet)	
+		newton.calculateVelocity(planet, timeIncrement)
+		newton.calculatePosition(planet, timeIncrement)
+	if logging == True:
+		logText = logText + planet.getLogText()
+		newton.log(logText)
+	logText = ''
+
+totalTime = time * timeIncrement
+#newton.printStatus(totalTime)
