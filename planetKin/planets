@@ -7,6 +7,7 @@ import os
 ###########################PURPOSE################################################## 
 #The purpose of this program is to simulate more than one physical body exerting 
 #forces on all other bodies using keplers laws and multivariable calculus 
+#Authors: Greg Swanson & John Bosiger
 ####################################################################################
 
 
@@ -14,7 +15,6 @@ import os
 #It is intended to only represent the state of the body, not the body across time
 class body:
     def __init__(self, bodyName, x, y, z, mass, Vx, Vy, Vz):
-	
 	self.name = bodyName 
         self.x = x
         self.y = y
@@ -200,13 +200,13 @@ class physics:
 #######################################Start of Program#############################################
 ####################################################################################################
 
-#              bodyName,  x,   y,   z,    mass,              Vxinitial,   Vyinitial,   Vzinitial
-sun= body(     'sun',     1.0 ,1.0, 1.0 ,1.9801 * (10 **30), 0.0,         0.0,         0.0)
-mercury = body('Mercury', 9.0, 9.0, 9.0, 3.3022 * (10 ** 23),0.0,         0.0,         0.0)
-venus = body(  'Venus',   7.0, 7.0, 7.0, 4.8685 * (10 ** 24),0.0,         0.0,         0.0)
-earth = body(  'Earth',   0.2, 0.5, 0.3 ,5.9736 * (10 ** 24),0.0,         0.0,         0.0)
-mars = body(   'Mars',    8.0, 8.0, 8.0, 6.4185 * (10 ** 23),0.0,         0.0,         0.0)
-jupiter= body( 'Jupiter', 2.0 ,2.0 ,2.0, 1.8986 * (10 ** 27),0.0,         0.0,         0.0)
+#              bodyName,  x,               y,                 z,    mass,              Vxinitial,   Vyinitial,   Vzinitial
+sun= body(     'sun',     1.0 ,1.0, 1.0 ,1.9801 * (10 **30), 200.0,         200.0,         200.0)
+mercury = body('Mercury', -32000000.0,  37400000.0,     6010000.0, 3.3022 * (10 ** 23),-48983.0,    -26756.0,   -2.31)
+venus = body(  'Venus',   7.0, 7.0, 7.0, 4.8685 * (10 ** 24),10000000.0,         100000.0,         30000.0)
+earth = body(  'Earth',   -105 * (10 **9), -106 * (10 ** 9), 5004000.0 ,5.9736 * (10 ** 24),20500.0,    -21507.0, -0.0895)
+mars = body(   'Mars',    -219908870.0, 1.720 * (10 ** 10), 1168359373.0, 6.4185 * (10 ** 23),-10383.0,-19470.0,-153.0)
+jupiter= body( 'Jupiter', 160069722 ,-761453163 ,-404840000, 1.8986 * (10 ** 27),12600,         3300,         -297)
 saturn = body( 'Saturn',  3.0, 3.0, 3.0, 5.6846 * (10 ** 26),0.0,         0.0,         0.0)
 uranus = body( 'Uranus',  5.0, 5.0, 5.0, 8.6810 * (10 ** 25),0.0,         0.0,         0.0)
 neptune = body('Neptune', 4.0, 4.0, 4.0, 10.243 * (10 ** 25),0.0,         0.0,         0.0)
@@ -215,14 +215,14 @@ moon = body(   'Moon',   10.0,10.0,10.0, 7.349 *  (10 ** 23),0.0,         0.0,  
 
 
 #define all bodies with mass
-bodyList = [mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto, moon]
+bodyList = [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto, moon]
 
 timeIncrement = 1 #number of seconds between calculations
 
 ####TESTING VARIABLES####
-testing = True 
+testing = False 
 if testing == True:
-	me= body('Me',          1.0,6371000.0,1.0,80.0,0.0,0.0,0.0)#radius of earth is 6371000 meters
+	me= body('Me',          1.0,-6371000.0,1.0,80.0,0.0,0.0,0.0)#radius of earth is 6371000 meters
 	bodyList = [me, earth]
 	timeIncrement = 1
 
@@ -240,8 +240,8 @@ percentComplete = 0
 lastDisplayedPercentComplete = 0
 print percentComplete, '% percent complete'
 
-iterations = 2000
-for time in range(0, iterations):
+iterationCount = 200
+for time in range(0, iterationCount):
 	for planet in bodyList:
 		newton.calculateTotalForce(planet) 
 		newton.calculateAcceleration(planet)	
@@ -259,7 +259,7 @@ for time in range(0, iterations):
 		print percentComplete, '% percent complete'
 		lastDisplayedPercentComplete = percentComplete
 	
-	percentComplete = 100 * (count / iterations)
+	percentComplete = 100 * (count / iterationCount)
 	count = count + 1
 
 totalTime = float(time) * timeIncrement
