@@ -211,11 +211,10 @@ saturn = body( 'Saturn',  -1.285 * (10 ** 9), 5.326 * (10 ** 8), 41.9 * (10 ** 6
 uranus = body( 'Uranus',  2.947 * (10 ** 9), -5.67 * (10 ** 8), -40.3 * (10 ** 6), 8.6810 * (10 ** 25),1.24 * (10 ** 3),6.37 * (10 ** 3),7.56)
 neptune = body('Neptune', 3.55 * (10 ** 9), -2.77 * (10 ** 9), -24.9 * (10 ** 6), 10.243 * (10 ** 25),3.31 * (10 ** 3),4.32 * (10 ** 3),-165)
 pluto = body(  'Pluto',  -47.3 * (10 ** 6),-4.68 * (10 ** 9),5.15 * (10 ** 8), 1.25 *   (10 ** 22),5.53 * (10 ** 3),-1095,-1480)
-moon = body(   'Moon',   10.0,10.0,10.0, 7.349 *  (10 ** 23),0.0,         0.0,         0.0)
 
 
 #define all bodies with mass
-bodyList = [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto, moon]
+bodyList = [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto]
 
 timeIncrement = 1 #number of seconds between calculations
 
