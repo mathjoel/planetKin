@@ -208,15 +208,14 @@ venus = body(  'Venus',   7.0, 7.0, 7.0, 4.8685 * (10 ** 24),10000000.0,        
 earth = body(  'Earth',   -105 * (10 **9), -106 * (10 ** 9), 5004000.0 ,5.9736 * (10 ** 24),20500.0,    -21507.0, -0.0895)
 mars = body(   'Mars',    -219908870.0, 1.720 * (10 ** 10), 1168359373.0, 6.4185 * (10 ** 23),-10383.0,-19470.0,-153.0)
 jupiter= body( 'Jupiter', 160069722 ,-761453163 ,-404840000, 1.8986 * (10 ** 27),12600,         3300,         -297)
-saturn = body( 'Saturn',  3.0, 3.0, 3.0, 5.6846 * (10 ** 26),0.0,         0.0,         0.0)
-uranus = body( 'Uranus',  5.0, 5.0, 5.0, 8.6810 * (10 ** 25),0.0,         0.0,         0.0)
-neptune = body('Neptune', 4.0, 4.0, 4.0, 10.243 * (10 ** 25),0.0,         0.0,         0.0)
-pluto = body(  'Pluto',  11.0,11.0,11.0, 1.25 *   (10 ** 22),0.0,         0.0,         0.0)
-moon = body(   'Moon',   10.0,10.0,10.0, 7.349 *  (10 ** 23),0.0,         0.0,         0.0)
+saturn = body( 'Saturn',  -1.285 * (10 ** 9), 5.326 * (10 ** 8), 41.9 * (10 ** 6), 5.6846 * (10 ** 26),-4206,-8945         ,         323)
+uranus = body( 'Uranus',  2.947 * (10 ** 9), -5.67 * (10 ** 8), -40.3 * (10 ** 6), 8.6810 * (10 ** 25),1.24 * (10 ** 3),6.37 * (10 ** 3),7.56)
+neptune = body('Neptune', 3.55 * (10 ** 9), -2.77 * (10 ** 9), -24.9 * (10 ** 6), 10.243 * (10 ** 25),3.31 * (10 ** 3),4.32 * (10 ** 3),-165)
+pluto = body(  'Pluto',  -47.3 * (10 ** 6),-4.68 * (10 ** 9),5.15 * (10 ** 8), 1.25 *   (10 ** 22),5.53 * (10 ** 3),-1095,-1480)
 
 
 #define all bodies with mass
-bodyList = [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto, moon]
+bodyList = [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto]
 
 timeIncrement = 1 #number of seconds between calculations
 
