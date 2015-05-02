@@ -1,15 +1,16 @@
 #!/usr/bin/python
 import math
 import os
+import pyqtgraph.examples
+import graphics
+#install pyqt http://www.pyqtgraph.org/
 #from sympy import *
-
 
 ###########################PURPOSE################################################## 
 #The purpose of this program is to simulate more than one physical body exerting 
 #forces on all other bodies using keplers laws and multivariable calculus 
 #Authors: Greg Swanson & John Bosiger
 ####################################################################################
-
 
 #This class describes a physical body with a position, velocity, acceleration, mass, and forces acting on it.  
 #It is intended to only represent the state of the body, not the body across time
@@ -263,4 +264,6 @@ for time in range(0, iterationCount):
 	count = count + 1
 
 totalTime = float(time) * timeIncrement
+pyqtgraph.examples.run()
+
 print 'Simulation Seconds =', totalTime, 'or ', totalTime / 60, 'Minutes or', totalTime /3600, 'Hours or', totalTime /3600/24/365, 'Years'
