@@ -224,7 +224,7 @@ testing = False
 if testing == True:
 	me= body('Me',          1.0,-6371000.0,1.0,80.0,0.0,0.0,0.0)#radius of earth is 6371000 meters
 	bodyList = [me, earth]
-	timeIncrement = 1
+	timeIncrement = 3600
 
 newton = physics(bodyList)
 
@@ -240,7 +240,7 @@ percentComplete = 0
 lastDisplayedPercentComplete = 0
 print percentComplete, '% percent complete'
 
-iterationCount = 200
+iterationCount = 2112
 for time in range(0, iterationCount):
 	for planet in bodyList:
 		newton.calculateTotalForce(planet) 
