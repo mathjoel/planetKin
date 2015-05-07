@@ -1,16 +1,15 @@
 #!/usr/bin/python
 import math
 import os
-#import pyqtgraph.examples
-#import graphics
-#install pyqt http://www.pyqtgraph.org/
 #from sympy import *
+
 
 ###########################PURPOSE################################################## 
 #The purpose of this program is to simulate more than one physical body exerting 
 #forces on all other bodies using keplers laws and multivariable calculus 
 #Authors: Greg Swanson & John Bosiger
 ####################################################################################
+
 
 #This class describes a physical body with a position, velocity, acceleration, mass, and forces acting on it.  
 #It is intended to only represent the state of the body, not the body across time
@@ -96,7 +95,7 @@ class body:
 #The purpose of this class is to compute the physical changes that occur to bodies that this class knows about
 #Currently, only gravitational forces and kinematics of bodies are calculated
 class physics:
-    def __init__(self, bodies):t
+    def __init__(self, bodies):
 	 self.bodies = bodies
 	 self.G = .0000000000667
    	 if os.system("ls planetLogFile"):
@@ -222,9 +221,9 @@ timeIncrement = 1 #number of seconds between calculations
 ####TESTING VARIABLES####
 testing = False 
 if testing == True:
-	me= body('Me',          1.0,6371000.0,1.0,80.0,0.0,0.0,0.0)#radius of earth is 6371000 meters
+	me= body('Me',          1.0,-6371000.0,1.0,80.0,0.0,0.0,0.0)#radius of earth is 6371000 meters
 	bodyList = [me, earth]
-	timeIncrement = 3600
+	timeIncrement = 1
 
 newton = physics(bodyList)
 
@@ -240,13 +239,12 @@ percentComplete = 0
 lastDisplayedPercentComplete = 0
 print percentComplete, '% percent complete'
 
-iterationCount = 2112
+iterationCount = 200
 for time in range(0, iterationCount):
 	for planet in bodyList:
 		newton.calculateTotalForce(planet) 
 		newton.calculateAcceleration(planet)	
 		newton.calculateVelocity(planet, timeIncrement)
-	for planet in bodyList:
 		newton.calculatePosition(planet, timeIncrement)
 		if logging == True:
 			logText = logText + planet.getLogText()
@@ -264,6 +262,4 @@ for time in range(0, iterationCount):
 	count = count + 1
 
 totalTime = float(time) * timeIncrement
-#pyqtgraph.examples.run()
-
 print 'Simulation Seconds =', totalTime, 'or ', totalTime / 60, 'Minutes or', totalTime /3600, 'Hours or', totalTime /3600/24/365, 'Years'
